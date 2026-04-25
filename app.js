@@ -45,6 +45,7 @@
         results: $('#view-results'),
         fallos: $('#view-fallos'),
         estudio: $('#view-estudio'),
+        'test-ordenado': $('#view-test-ordenado'),
     };
 
     // ========================================
@@ -93,6 +94,7 @@
         const titles = {
             home: 'Inicio',
             'test-selector': `Test ${capitalize(currentTestType || '')}`,
+            'test-ordenado': 'Test Ordenado',
             quiz: `Test ${capitalize(currentTestType || '')}`,
             results: 'Resultados',
             fallos: 'Repasar Fallos',
@@ -186,7 +188,18 @@
             completo: '📙 Test Completo',
         };
         $('#selector-title').textContent = title[type] || 'Test';
+        
+        // Show/hide "Test Ordenado" only for "Común"
+        const btnOrdenado = $('#btn-test-ordenado');
+        if (btnOrdenado) {
+            btnOrdenado.style.display = type === 'comun' ? 'flex' : 'none';
+        }
+        
         showView('test-selector');
+    }
+
+    function openTestOrdenado() {
+        showView('test-ordenado');
     }
 
     // ========================================
@@ -222,17 +235,29 @@
         renderQuestion();
     }
 
-    function startQuizWithQuestions(questions) {
-        quizQuestions = shuffleArray([...questions]);
+    function startQuizWithQuestions(questions, isOrdered = false) {
+        if (isOrdered) {
+            quizQuestions = [...questions]; // Don't shuffle
+        } else {
+            quizQuestions = shuffleArray([...questions]);
+        }
         quizIndex = 0;
         quizCorrect = 0;
         quizWrong = 0;
         answered = false;
         lastQuizConfig = null;
-        isFallosMode = true;
+        isFallosMode = !isOrdered;
 
         showView('quiz');
         renderQuestion();
+    }
+
+    function startOrderedQuiz(start, end) {
+        const pool = getQuestionPool('comun');
+        const selectedQuestions = pool.filter(q => q.id >= start && q.id <= end);
+        
+        lastQuizConfig = { type: 'ordenado', start, end };
+        startQuizWithQuestions(selectedQuestions, true);
     }
 
     function renderQuestion() {
@@ -573,6 +598,17 @@
         $('#selector-back').addEventListener('click', () => showView('home'));
         $('#btn-test-rapido').addEventListener('click', () => startQuiz(currentTestType, 10));
         $('#btn-test-completo').addEventListener('click', () => startQuiz(currentTestType, 100));
+        $('#btn-test-ordenado').addEventListener('click', () => openTestOrdenado());
+
+        // Test Ordenado
+        $('#ordenado-back').addEventListener('click', () => openTestSelector('comun'));
+        $$('.block-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const start = parseInt(btn.dataset.start);
+                const end = parseInt(btn.dataset.end);
+                startOrderedQuiz(start, end);
+            });
+        });
 
         // Quiz
         $('#quiz-back').addEventListener('click', () => {
@@ -585,7 +621,11 @@
         // Results
         $('#btn-retry').addEventListener('click', () => {
             if (lastQuizConfig) {
-                startQuiz(lastQuizConfig.type, lastQuizConfig.count);
+                if (lastQuizConfig.type === 'ordenado') {
+                    startOrderedQuiz(lastQuizConfig.start, lastQuizConfig.end);
+                } else {
+                    startQuiz(lastQuizConfig.type, lastQuizConfig.count);
+                }
             } else {
                 showView('home');
             }
