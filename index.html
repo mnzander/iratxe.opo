@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpoTest — Preparación de Oposiciones</title>
+    <meta name="description" content="Plataforma de práctica de test para oposiciones sanitarias. Temario común y específico con 500 preguntas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i data-lucide="clipboard-check" class="logo-icon"></i>
+                    <span class="logo-text">iratxe.opo</span>
+                </div>
+                <button id="sidebar-close" class="sidebar-close" aria-label="Cerrar menú"><i data-lucide="x"></i></button>
+            </div>
+            <ul class="nav-list">
+                <li>
+                    <button class="nav-item active" data-view="home" id="nav-home">
+                        <i data-lucide="home" class="nav-icon"></i>
+                        <span class="nav-label">Inicio</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-view="test-comun" id="nav-comun">
+                        <i data-lucide="book-text" class="nav-icon"></i>
+                        <span class="nav-label">Test Común</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-view="test-especifico" id="nav-especifico">
+                        <i data-lucide="book" class="nav-icon"></i>
+                        <span class="nav-label">Test Específico</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-view="test-completo" id="nav-completo">
+                        <i data-lucide="library" class="nav-icon"></i>
+                        <span class="nav-label">Test Completo</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-view="fallos" id="nav-fallos">
+                        <i data-lucide="circle-alert" class="nav-icon icon-fallos"></i>
+                        <span class="nav-label">Repasar Fallos</span>
+                        <span class="nav-badge" id="fallos-badge" style="display:none;">0</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-view="estudio" id="nav-estudio">
+                        <i data-lucide="book-open" class="nav-icon"></i>
+                        <span class="nav-label">Modo Estudio</span>
+                    </button>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="stats-mini">
+                    <div class="stat-mini">
+                        <span class="stat-mini-value" id="sidebar-correct">0</span>
+                        <span class="stat-mini-label">Correctas</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-mini-value" id="sidebar-wrong">0</span>
+                        <span class="stat-mini-label">Fallos</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main-content" class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+                    <span></span><span></span><span></span>
+                </button>
+                <h1 class="topbar-title" id="topbar-title">Inicio</h1>
+                <div class="topbar-actions">
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                        <span class="theme-toggle-track">
+                            <span class="theme-toggle-icon theme-toggle-sun"><i data-lucide="sun"></i></span>
+                            <span class="theme-toggle-icon theme-toggle-moon"><i data-lucide="moon"></i></span>
+                            <span class="theme-toggle-thumb"></span>
+                        </span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Views Container -->
+            <div class="views-container">
+
+                <!-- HOME VIEW -->
+                <section id="view-home" class="view active">
+                    <div class="home-hero">
+                        <h2 class="home-greeting">¡Hola, Iratxe!</h2>
+                        <p class="home-subtitle">Elige un modo para empezar a practicar</p>
+                    </div>
+                    <div class="home-cards">
+                        <button class="home-card card-comun" data-action="test-comun" id="card-comun">
+                            <div class="card-icon"><i data-lucide="book-text"></i></div>
+                            <h3>Test Común</h3>
+                            <p>300 preguntas del temario común</p>
+                            <span class="card-arrow"><i data-lucide="chevron-right"></i></span>
+                        </button>
+                        <button class="home-card card-especifico" data-action="test-especifico" id="card-especifico">
+                            <div class="card-icon"><i data-lucide="book"></i></div>
+                            <h3>Test Específico</h3>
+                            <p>200 preguntas del temario específico</p>
+                            <span class="card-arrow"><i data-lucide="chevron-right"></i></span>
+                        </button>
+                        <button class="home-card card-completo" data-action="test-completo" id="card-completo">
+                            <div class="card-icon"><i data-lucide="library"></i></div>
+                            <h3>Test Completo</h3>
+                            <p>500 preguntas (Común + Específico)</p>
+                            <span class="card-arrow"><i data-lucide="chevron-right"></i></span>
+                        </button>
+                        <button class="home-card card-fallos" data-action="fallos" id="card-fallos">
+                            <div class="card-icon icon-fallos"><i data-lucide="circle-alert"></i></div>
+                            <h3>Repasar Fallos</h3>
+                            <p>Repasa las preguntas que has fallado</p>
+                            <span class="card-arrow"><i data-lucide="chevron-right"></i></span>
+                        </button>
+                        <button class="home-card card-estudio" data-action="estudio" id="card-estudio">
+                            <div class="card-icon"><i data-lucide="book-open"></i></div>
+                            <h3>Modo Estudio</h3>
+                            <p>Explora las 500 preguntas</p>
+                            <span class="card-arrow"><i data-lucide="chevron-right"></i></span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- TEST MODE SELECTOR VIEW (for Común / Específico / Completo) -->
+                <section id="view-test-selector" class="view">
+                    <div class="selector-header">
+                        <button class="back-btn" id="selector-back"><i data-lucide="chevron-left" class="btn-icon"></i> Volver</button>
+                        <h2 id="selector-title">Elige tipo de test</h2>
+                    </div>
+                    <div class="selector-cards">
+                        <button class="selector-card" id="btn-test-rapido">
+                            <div class="selector-card-icon"><i data-lucide="zap"></i></div>
+                            <h3>Test Rápido</h3>
+                            <p>10 preguntas aleatorias</p>
+                            <span class="selector-card-time">~5 min</span>
+                        </button>
+                        <button class="selector-card" id="btn-test-completo">
+                            <div class="selector-card-icon"><i data-lucide="file-text"></i></div>
+                            <h3>Test Completo</h3>
+                            <p>100 preguntas aleatorias</p>
+                            <span class="selector-card-time">~45 min</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- QUIZ VIEW -->
+                <section id="view-quiz" class="view">
+                    <div class="quiz-header">
+                        <div class="quiz-header-top">
+                            <button class="back-btn" id="quiz-back"><i data-lucide="chevron-left" class="btn-icon"></i> Salir</button>
+                            <span id="quiz-counter">1 / 10</span>
+                            <div class="quiz-score">
+                                <span class="score-correct" id="quiz-score-correct">✓ 0</span>
+                                <span class="score-wrong" id="quiz-score-wrong">✗ 0</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="quiz-progress-fill"></div>
+                        </div>
+                    </div>
+                    <div class="quiz-body">
+                        <div class="question-card" id="question-card">
+                            <span class="question-category-badge" id="question-category-badge">Común</span>
+                            <p class="question-text" id="question-text"></p>
+                        </div>
+                        <div class="options-list" id="options-list"></div>
+                        <button class="btn-next" id="btn-next" style="display:none;">Siguiente pregunta <i data-lucide="chevron-right" class="btn-icon-right"></i></button>
+                    </div>
+                </section>
+
+                <!-- QUIZ RESULTS VIEW -->
+                <section id="view-results" class="view">
+                    <div class="results-container">
+                        <div class="results-header">
+                            <div class="results-icon"><i data-lucide="award"></i></div>
+                            <h2>¡Test Finalizado!</h2>
+                        </div>
+                        <div class="results-score-circle">
+                            <svg viewBox="0 0 120 120" class="score-ring">
+                                <circle cx="60" cy="60" r="54" class="score-ring-bg"/>
+                                <circle cx="60" cy="60" r="54" class="score-ring-fill" id="score-ring-fill"/>
+                            </svg>
+                            <div class="score-text">
+                                <span class="score-percent" id="results-percent">0%</span>
+                            </div>
+                        </div>
+                        <div class="results-stats">
+                            <div class="result-stat correct">
+                                <span class="result-stat-value" id="results-correct">0</span>
+                                <span class="result-stat-label">Correctas</span>
+                            </div>
+                            <div class="result-stat wrong">
+                                <span class="result-stat-value" id="results-wrong">0</span>
+                                <span class="result-stat-label">Incorrectas</span>
+                            </div>
+                            <div class="result-stat total">
+                                <span class="result-stat-value" id="results-total">0</span>
+                                <span class="result-stat-label">Total</span>
+                            </div>
+                        </div>
+                        <div class="results-actions">
+                            <button class="btn-primary" id="btn-retry"><i data-lucide="refresh-cw" class="btn-icon"></i> Repetir Test</button>
+                            <button class="btn-secondary" id="btn-review-mistakes"><i data-lucide="list-checks" class="btn-icon"></i> Ver Fallos</button>
+                            <button class="btn-secondary" id="btn-go-home"><i data-lucide="home" class="btn-icon"></i> Inicio</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FALLOS VIEW -->
+                <section id="view-fallos" class="view">
+                    <div class="fallos-header">
+                        <h2><i data-lucide="circle-alert" class="title-icon"></i> Repasar Fallos</h2>
+                        <p class="fallos-description" id="fallos-description">Aquí encontrarás las preguntas que has fallado durante esta sesión</p>
+                    </div>
+                    <div class="fallos-actions" id="fallos-actions" style="display:none;">
+                        <button class="btn-primary" id="btn-test-fallos"><i data-lucide="play" class="btn-icon"></i> Test con todos los fallos</button>
+                        <button class="btn-danger" id="btn-clear-fallos"><i data-lucide="trash-2" class="btn-icon"></i> Limpiar fallos</button>
+                    </div>
+                    <div class="fallos-empty" id="fallos-empty">
+                        <div class="empty-icon"><i data-lucide="check-circle-2"></i></div>
+                        <h3>¡No tienes fallos!</h3>
+                        <p>Empieza a hacer tests y las preguntas que falles aparecerán aquí.</p>
+                    </div>
+                    <div class="fallos-list" id="fallos-list"></div>
+                </section>
+
+                <!-- ESTUDIO VIEW -->
+                <section id="view-estudio" class="view">
+                    <div class="estudio-header">
+                        <h2><i data-lucide="book-open" class="title-icon"></i> Modo Estudio</h2>
+                        <p>Explora las 500 preguntas del temario</p>
+                    </div>
+                    <div class="estudio-filters">
+                        <div class="search-box">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="estudio-search" class="search-input" placeholder="Buscar pregunta...">
+                        </div>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="todas" id="filter-todas">Todas (500)</button>
+                            <button class="filter-btn" data-filter="comun" id="filter-comun">Común (300)</button>
+                            <button class="filter-btn" data-filter="especifico" id="filter-especifico">Específico (200)</button>
+                        </div>
+                    </div>
+                    <div class="estudio-count" id="estudio-count">Mostrando 500 preguntas</div>
+                    <div class="estudio-list" id="estudio-list"></div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
